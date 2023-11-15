@@ -1,5 +1,22 @@
-﻿<h3>CalculatorView</h3>
+﻿@using CalcBlazor.Components
+@page "/calculator"
 
-@code {
-
+@inherits Data.CalculatorBase
+<h3>@displayText</h3>
+@for (int i = 0; i < 10; i++)
+{
+	<CalculatorButton Number="@i.ToString()" OnNumberClick="AddNumber"></CalculatorButton>
 }
+
+<CalculatorButton Number="," OnNumberClick="AddNumber"></CalculatorButton>
+
+<CalculatorButton Number="+" OnNumberClick="SetMathOperator"></CalculatorButton>
+<CalculatorButton Number="-" OnNumberClick="SetMathOperator"></CalculatorButton>
+<CalculatorButton Number="*" OnNumberClick="SetMathOperator"></CalculatorButton>
+<CalculatorButton Number="/" OnNumberClick="SetMathOperator"></CalculatorButton>
+
+<CalculatorButton Number="=" OnNumberClick="Calculate"></CalculatorButton>
+
+<div>@currentOperation.leftNumber</div>
+<div>@currentOperation.mathOperator</div>
+<div>@currentOperation.rightNumber</div>
