@@ -15,7 +15,6 @@ namespace CalcBlazor
 			// Add services to the container.
 			builder.Services.AddRazorPages();
 			builder.Services.AddServerSideBlazor();
-			builder.Services.AddSingleton<WeatherForecastService>();
 
 			builder.Services.AddDbContext<CalculatorContext>(option =>
 				option.UseSqlServer(builder.Configuration.GetConnectionString("calculatordb")));

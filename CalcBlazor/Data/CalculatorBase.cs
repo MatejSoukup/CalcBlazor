@@ -38,22 +38,23 @@ namespace CalcBlazor.Data
 
 		public void Calculate()
 		{
+			CalculatorService calculator = new CalculatorService();
 			string result = "";
 			if (currentOperation.mathOperator == "+")
 			{
-				result = CalculatorService.Add(Convert.ToDecimal(currentOperation.leftNumber), Convert.ToDecimal(currentOperation.rightNumber)).ToString();
+				result = calculator.Add(Convert.ToDecimal(currentOperation.leftNumber), Convert.ToDecimal(currentOperation.rightNumber)).ToString();
 			}
 			else if (currentOperation.mathOperator == "-")
 			{
-				result = CalculatorService.Substract(Convert.ToDecimal(currentOperation.leftNumber), Convert.ToDecimal(currentOperation.rightNumber)).ToString();
+				result = calculator.Subtract(Convert.ToDecimal(currentOperation.leftNumber), Convert.ToDecimal(currentOperation.rightNumber)).ToString();
 			}
 			else if (currentOperation.mathOperator == "*")
 			{
-				result = CalculatorService.Multiply(Convert.ToDecimal(currentOperation.leftNumber), Convert.ToDecimal(currentOperation.rightNumber)).ToString();
+				result = calculator.Multiply(Convert.ToDecimal(currentOperation.leftNumber), Convert.ToDecimal(currentOperation.rightNumber)).ToString();
 			}
 			else if (currentOperation.mathOperator == "/")
 			{
-				result = CalculatorService.Divide(Convert.ToDecimal(currentOperation.leftNumber), Convert.ToDecimal(currentOperation.rightNumber)).ToString();
+				result = calculator.Divide(Convert.ToDecimal(currentOperation.leftNumber), Convert.ToDecimal(currentOperation.rightNumber)).ToString();
 			}
 
 			if (returnWholeNumbers)
@@ -90,6 +91,7 @@ namespace CalcBlazor.Data
 		public void ResetOperation()
 		{
 			displayText = "";
+			writeLeft = true;
 			currentOperation = new Operation();
 		}
 

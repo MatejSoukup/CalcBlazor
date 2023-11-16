@@ -1,30 +1,55 @@
 ﻿@using CalcBlazor.Components
-@page "/calculator"
-
+@page "/"
 @inherits Data.CalculatorBase
-<h3>@displayText</h3>
-@for (int i = 0; i < 10; i++)
-{
-	<CalculatorButton Text="@i.ToString()" OnNumberClick="AddNumber"></CalculatorButton>
-}
 
-<CalculatorButton Text="," OnNumberClick="AddNumber"></CalculatorButton>
+<link href="css/CalcStyle.css" rel="stylesheet" />
 
-<CalculatorButton Text="+" OnNumberClick="SetMathOperator"></CalculatorButton>
-<CalculatorButton Text="-" OnNumberClick="SetMathOperator"></CalculatorButton>
-<CalculatorButton Text="*" OnNumberClick="SetMathOperator"></CalculatorButton>
-<CalculatorButton Text="/" OnNumberClick="SetMathOperator"></CalculatorButton>
+<section>
+    <div class="num">
+        <h3>@displayText</h3>
+    </div>
+    <div class="container">
+        <div class="numpad">
+            @for (int i = 1; i < 10; i++)
+            {
+                <CalculatorButton Text="@i.ToString()" OnNumberClick="AddNumber"></CalculatorButton>
+            }
+            <CalculatorButton Text="0" OnNumberClick="AddNumber"></CalculatorButton>
+            <CalculatorButton Text="," OnNumberClick="AddNumber"></CalculatorButton>
+            <CalculatorButton Text="C" OnNumberClick="ResetOperation"></CalculatorButton>
+        </div>
+        <div class="operations">
+            <CalculatorButton Text="+" OnNumberClick="SetMathOperator"></CalculatorButton>
+            <CalculatorButton Text="-" OnNumberClick="SetMathOperator"></CalculatorButton>
+            <CalculatorButton Text="*" OnNumberClick="SetMathOperator"></CalculatorButton>
+            <CalculatorButton Text="/" OnNumberClick="SetMathOperator"></CalculatorButton>
+        </div>
+    </div>
+    <div class="container2">
+        <div>
+            <button class="wholenumbers" @onclick="Calculate">=</button>
+        </div>
+        <div>
 
-<CalculatorButton Text="=" OnNumberClick="Calculate"></CalculatorButton>
+            @if (returnWholeNumbers == true)
+            {
+                <button class="wholenumbers" @onclick="WholeNumbers">Celá čísla</button>
+            }
+            else
+            {
+                <button class="" @onclick="WholeNumbers">Celá čísla</button>
+            }
 
-<CalculatorButton Text="C" OnNumberClick="ResetOperation"></CalculatorButton>
+        </div>
+    </div>
+</section>
 
-<CalculatorButton Text="Celá čísla" OnNumberClick="WholeNumbers"></CalculatorButton>
-
-<div>History</div>
+<h4 style="margin-top:15px;">History</h4>
+<hr />
 @for (int i = History.Count - 1; i >= 0; i--)
-        {
+{
             <div>
                 @History[i].ToString()
             </div>
-        }
+}
+

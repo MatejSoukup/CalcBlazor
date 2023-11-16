@@ -2,7 +2,7 @@
 {
 	public class CalculatorService
 	{
-		public static decimal? Add(decimal leftNumber, decimal rightNumber)
+		public decimal? Add(decimal leftNumber, decimal rightNumber)
 		{
 			try
 			{
@@ -16,7 +16,7 @@
 			return null;
 		}
 
-		public static decimal? Substract(decimal leftNumber, decimal rightNumber)
+		public decimal? Subtract(decimal leftNumber, decimal rightNumber)
 		{
 			try
 			{
@@ -30,7 +30,7 @@
 			return null;
 		}
 
-		public static decimal? Multiply(decimal leftNumber, decimal rightNumber)
+		public decimal? Multiply(decimal leftNumber, decimal rightNumber)
 		{
 			try
 			{
@@ -44,7 +44,7 @@
 			return null;
 		}
 
-		public static decimal? Divide(decimal leftNumber, decimal rightNumber)
+		public decimal? Divide(decimal leftNumber, decimal rightNumber)
 		{
 			try
 			{
