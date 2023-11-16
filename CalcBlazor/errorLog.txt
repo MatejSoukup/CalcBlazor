@@ -1,1 +1,2 @@
 Attempted to divide by zero.
+Attempted to divide by zero.
