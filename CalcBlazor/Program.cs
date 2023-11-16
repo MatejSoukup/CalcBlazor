@@ -1,6 +1,8 @@
 using CalcBlazor.Data;
+using CalcBlazor.Database;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.EntityFrameworkCore;
 
 namespace CalcBlazor
 {
@@ -14,6 +16,10 @@ namespace CalcBlazor
 			builder.Services.AddRazorPages();
 			builder.Services.AddServerSideBlazor();
 			builder.Services.AddSingleton<WeatherForecastService>();
+
+			builder.Services.AddDbContext<CalculatorContext>(option =>
+				option.UseSqlServer(builder.Configuration.GetConnectionString("calculatordb")));
+
 
 			var app = builder.Build();
 

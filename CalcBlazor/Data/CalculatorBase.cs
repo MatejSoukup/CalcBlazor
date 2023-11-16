@@ -1,4 +1,5 @@
-﻿using CalcBlazor.Model;
+﻿using CalcBlazor.Database;
+using CalcBlazor.Model;
 using CalcBlazor.Services;
 using Microsoft.AspNetCore.Components;
 
@@ -6,63 +7,122 @@ namespace CalcBlazor.Data
 {
     public class CalculatorBase : ComponentBase
     {
-        public Operation currentOperation = new Operation();
-        public bool writeLeft { get; set; }
-        public string displayText { get; set; }
-        public void AddNumber(string number)
-        {
-            if (writeLeft)
-            {
-                currentOperation.leftNumber += number;
-            }
-            else
-            {
-                currentOperation.rightNumber += number;
-            }
-            displayText = currentOperation.leftNumber + currentOperation.mathOperator + currentOperation.rightNumber;
-        }
-        public void SetMathOperator(string mathOperator)
-        {
-            currentOperation.mathOperator = mathOperator;
-            writeLeft = false;
-
-            displayText = currentOperation.leftNumber + currentOperation.mathOperator + currentOperation.rightNumber;
-        }
-
-        public void Calculate()
-        {
-            if (currentOperation.mathOperator == "+")
-            {
-                displayText = CalculatorService.Add(Convert.ToDecimal(currentOperation.leftNumber), Convert.ToDecimal(currentOperation.rightNumber)).ToString();
-            }
-            else if (currentOperation.mathOperator == "-")
-            {
-                displayText = CalculatorService.Substract(Convert.ToDecimal(currentOperation.leftNumber), Convert.ToDecimal(currentOperation.rightNumber)).ToString();
-            }
-            else if (currentOperation.mathOperator == "*")
-            {
-                displayText = CalculatorService.Multiply(Convert.ToDecimal(currentOperation.leftNumber), Convert.ToDecimal(currentOperation.rightNumber)).ToString();
-            }
-            else if (currentOperation.mathOperator == "/")
-            {
-                displayText = CalculatorService.Divide(Convert.ToDecimal(currentOperation.leftNumber), Convert.ToDecimal(currentOperation.rightNumber)).ToString();
-            }
-
-            currentOperation = new Operation();
-            writeLeft = true;
-        }
-
-        public void ResetOperation()
-        {
-            displayText = "";
-            currentOperation = new Operation();
-        }
+		private readonly CalculatorContext _dbContext = new CalculatorContext();
+		public Operation currentOperation = new Operation();
+		public List<Operation> History = new List<Operation>();
+		
+		private bool writeLeft;
+		public bool returnWholeNumbers;
+		public string displayText { get; set; }
 
 
-        protected override Task OnInitializedAsync()
-        {
-            writeLeft = true;
-            return base.OnInitializedAsync();
-        }
-    }
+		public void AddNumber(string number)
+		{
+			if (writeLeft)
+			{
+				currentOperation.leftNumber += number;
+			}
+			else
+			{
+				currentOperation.rightNumber += number;
+			}
+			displayText = currentOperation.leftNumber + currentOperation.mathOperator + currentOperation.rightNumber;
+		}
+		public void SetMathOperator(string mathOperator)
+		{
+			currentOperation.mathOperator = mathOperator;
+			writeLeft = false;
+
+			displayText = currentOperation.leftNumber + currentOperation.mathOperator + currentOperation.rightNumber;
+		}
+
+		public void Calculate()
+		{
+			string result = "";
+			if (currentOperation.mathOperator == "+")
+			{
+				result = CalculatorService.Add(Convert.ToDecimal(currentOperation.leftNumber), Convert.ToDecimal(currentOperation.rightNumber)).ToString();
+			}
+			else if (currentOperation.mathOperator == "-")
+			{
+				result = CalculatorService.Substract(Convert.ToDecimal(currentOperation.leftNumber), Convert.ToDecimal(currentOperation.rightNumber)).ToString();
+			}
+			else if (currentOperation.mathOperator == "*")
+			{
+				result = CalculatorService.Multiply(Convert.ToDecimal(currentOperation.leftNumber), Convert.ToDecimal(currentOperation.rightNumber)).ToString();
+			}
+			else if (currentOperation.mathOperator == "/")
+			{
+				result = CalculatorService.Divide(Convert.ToDecimal(currentOperation.leftNumber), Convert.ToDecimal(currentOperation.rightNumber)).ToString();
+			}
+
+			if (returnWholeNumbers)
+			{
+				result = decimal.Floor(Convert.ToDecimal(result)).ToString();
+			}
+			currentOperation.result = result;
+
+			try
+			{
+				_dbContext.Operations.Add(currentOperation);
+				_dbContext.SaveChanges();
+			}
+			catch (Exception e)
+			{
+				ErrorHandleService.SendError(e);
+			}
+			
+
+			displayText = result;
+			if(History.Count >= 10)
+			{
+				History.RemoveAt(0);
+				History.Add(currentOperation);
+			}
+			else
+			{
+				History.Add(currentOperation);
+			}
+			currentOperation = new Operation();
+			writeLeft = true;
+		}
+
+		public void ResetOperation()
+		{
+			displayText = "";
+			currentOperation = new Operation();
+		}
+
+		public void WholeNumbers()
+		{
+			returnWholeNumbers = !returnWholeNumbers;
+		}
+
+
+		protected override Task OnInitializedAsync()
+		{
+			try
+			{
+				List<Operation> databaseHistoryList = _dbContext.Operations
+			.OrderByDescending(o => o.Id)
+			.Take(10).ToList();
+
+				databaseHistoryList.Reverse();
+
+				foreach (Operation operation in databaseHistoryList)
+				{
+					History.Add(operation);
+				}
+			}
+			catch (Exception e)
+			{
+				ErrorHandleService.SendError(e);
+			}
+			
+
+			writeLeft = true;
+			returnWholeNumbers =  false;
+			return base.OnInitializedAsync();
+		}
+	}
 }

@@ -1,14 +1,14 @@
-﻿<button class="number-button" @onclick="OnClick">@Number</button>
+﻿<button class="number-button" @onclick="OnClick">@Text</button>
 
 @code {
     [Parameter]
-    public string Number { get; set; }
+    public string Text { get; set; }
 
     [Parameter]
     public EventCallback<string> OnNumberClick { get; set; }
 
     private async Task OnClick()
     {
-        await OnNumberClick.InvokeAsync(Number);
+        await OnNumberClick.InvokeAsync(Text);
     }
 }
